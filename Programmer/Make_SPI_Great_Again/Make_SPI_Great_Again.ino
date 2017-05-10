@@ -449,6 +449,7 @@ void programRoutine(){
   // Her kørers forskellige procedurer alt efter hvilken af de 4 samples
   // der skal programmeres. 
   for(int sampleNr = 0; sampleNr < NUMBER_OF_SAMPLES; sampleNr++){
+    
     // Her udregnes hvor mange HELE pages der er (256 byte)
     tempVal = (arrayLengths[sampleNr] - (arrayLengths[sampleNr] % 0xFF)) / 0xFF;
   
@@ -498,6 +499,7 @@ void programRoutine(){
   
         // Vi er nu færdige med at skrive antallet af HELE pages
         lykkesDetAtSkrive = false;
+        
         do{
           // Samme procedure som overstående, bare denne gang er det ikke nødvendigvis en hel page
           // hvilket ses på den sidste parameter i pageProgram()
