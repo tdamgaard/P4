@@ -264,7 +264,7 @@ void loop(){
   if(Serial.available() == 1){   // check for serial data
     char tempCharForSwitch = Serial.read();
     if(tempCharForSwitch > 90){
-      Serial.print("tempCharForSwitch:\t"); Serial.println(tempCharForSwitch);
+      // Serial.print("tempCharForSwitch:\t"); Serial.println(tempCharForSwitch);
       tempCharForSwitch -= 32;
     } 
     switch(tempCharForSwitch){       // see which command we received
@@ -276,7 +276,10 @@ void loop(){
       programRoutine();
       readRoutine();
       verifyRoutine();
-      lockRoutine();
+      
+      #if SHOULD_LOCK_AFTER_PROGRAMMING == 1
+        lockRoutine();
+      #endif
       
       Serial.println("--- Process done --------------");
       printMainMenu();
@@ -304,7 +307,53 @@ void loop(){
       break;
 
     case 'D':// Specific erase
-      
+      headerRoutine();
+      Serial.println("\t[                ]");
+      delay(200);
+      Serial.println("\t[D               ]");
+      delay(200);
+      Serial.println("\t[=D              ]");
+      delay(200);
+      Serial.println("\t[==D             ]");
+      delay(200);
+      Serial.println("\t[===D            ]");
+      delay(200);
+      Serial.println("\t[====D           ]");
+      delay(200);
+      Serial.println("\t[8====D          ]");
+      delay(200);
+      Serial.println("\t[ 8====D         ]");
+      delay(200);
+      Serial.println("\t[  8====D        ]");
+      delay(200);
+      Serial.println("\t[   8====D       ]");
+      delay(200);
+      Serial.println("\t[    8====D      ]");
+      delay(200);
+      Serial.println("\t[     8====D     ]");
+      delay(200);
+      Serial.println("\t[      8====D    ]");
+      delay(200);
+      Serial.println("\t[       8====D   ]");
+      delay(200);
+      Serial.println("\t[        8====D  ]");
+      delay(200);
+      Serial.println("\t[         8====D ]");
+      delay(200);
+      Serial.println("\t[          8====D]");
+      delay(200);
+      Serial.println("\t[           8====]");
+      delay(200);
+      Serial.println("\t[            8===]");
+      delay(200);
+      Serial.println("\t[             8==]");
+      delay(200);
+      Serial.println("\t[              8=]");
+      delay(200);
+      Serial.println("\t[               8]");
+      delay(200);
+      Serial.println("\t[                ]");
+      delay(1500);
       Serial.println("--- Process done --------------");
       printMainMenu();
       break;
@@ -316,9 +365,11 @@ void loop(){
       printMainMenu();
       break;
     case 'L': // Lock chip
+      lockRoutine();
       break;
 
     case 'U': // Unlock chip
+      unlockRoutine();
       break;
 
       
@@ -424,9 +475,10 @@ void programRoutine(){
         // Sætter adresse-variablen
         tempAdresse = KICK_ADRESS;
   
-        // Tjekker om vi skal slette ne 32kB blok
+        // Tjekker om vi skal slette en 32kB blok
         #if SHOULD_WIPE_WHOLE_CHIP == 0
           #if SHOULD_BLOCK_ERASE == 1
+            // Bruges egentlig ikke mere
             block32Erase(tempAdresse);  
           #endif
         #endif
@@ -615,11 +667,9 @@ void verifyRoutine(){
 
 void lockRoutine(){
   // Hvis den skal låse chippen bagefter den har skrevet til den
-  #if SHOULD_LOCK_AFTER_PROGRAMMING == 1
-    Serial.print("Locking the chip:\t");
-    lockChip();
-    Serial.println("DONE\n");
-  #endif
+  Serial.print("Locking the chip:\t");
+  lockChip();
+  Serial.println("DONE\n");
 }
 
 

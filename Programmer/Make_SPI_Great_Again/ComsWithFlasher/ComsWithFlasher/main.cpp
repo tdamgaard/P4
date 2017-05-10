@@ -34,7 +34,8 @@ const string sampleNames[] = {
 
 int main () {
     string tempString;
-
+    string tempString2;
+    
     for(int i = 0; i < NUMBER_OF_SAMPLES; i++){
         string tempFileWriteString = "/Users/iLyngklip/Documents/Arduino/Make_SPI_Great_Again/ComsWithFlasher/ComsWithFlasher/Færdig_arduino_kode/";
         string tempFileReadString = "/Users/iLyngklip/Documents/Arduino/Make_SPI_Great_Again/ComsWithFlasher/ComsWithFlasher/";
@@ -47,15 +48,15 @@ int main () {
         
         if (writeFile.is_open() && readFile.is_open())
         {
-            readFile.seekg(48*2);
+            readFile.seekg(46*2);
             /*
-            cout << (char)readFile.get();
-            cout << (char)readFile.get();
-            cout << (char)readFile.get();
-            cout << (char)readFile.get();
-            cout << (char)readFile.get();
-            cout << (char)readFile.get() << "\n";
-            */
+             cout << (char)readFile.get();
+             cout << (char)readFile.get();
+             cout << (char)readFile.get();
+             cout << (char)readFile.get();
+             cout << (char)readFile.get();
+             cout << (char)readFile.get() << "\n";
+             */
             // print header
             int length = 0;
             
@@ -66,6 +67,11 @@ int main () {
                 tempString.append(("0x"));
                 char tempChar;
                 char tempChar2;
+                
+                char tempChar3;
+                char tempChar4;
+                
+                
                 do{
                     tempChar = (char)readFile.get();
                 } while ((tempChar <= '0' && tempChar >= '9' && tempChar <= 'a' && tempChar >= 'z') || tempChar == 10 || tempChar == 13);
@@ -77,12 +83,27 @@ int main () {
                     tempChar2 = (char)readFile.get();
                 } while ((tempChar2 <= '0' && tempChar2 >= '9' && tempChar2 <= 'a' && tempChar2 >= 'z') || tempChar2 == 10 || tempChar2 == 13);
                 
-                tempString.push_back((char)tempChar2);
+                do{
+                    tempChar3 = (char)readFile.get();
+                } while ((tempChar2 <= '0' && tempChar3 >= '9' && tempChar3 <= 'a' && tempChar3 >= 'z') || tempChar3 == 10 || tempChar3 == 13);
+                do{
+                    tempChar4 = (char)readFile.get();
+                } while ((tempChar4 <= '0' && tempChar4 >= '9' && tempChar4 <= 'a' && tempChar4 >= 'z') || tempChar4 == 10 || tempChar4 == 13);
+                
+                
+                // Gemmer første byte
+                tempString.push_back((char)tempChar3);
+                tempString.push_back((char)tempChar4);
+                tempString.append(", ");
+                tempString.append(("0x"));
+                
                 tempString.push_back((char)tempChar);
+                tempString.push_back((char)tempChar2);
+                
                 tempString.append(", ");
                 length++;
                 
-                if(length % 16 == 0){
+                if(length % 8 == 0){
                     tempString.append("\n");
                 }
                 
@@ -92,21 +113,21 @@ int main () {
                 
             }
             /*
-                tempString += (char)readFile.get();
-                tempString += (char)readFile.get();
-                tempString += (char)readFile.get();
-                tempString += (char)readFile.get();
-                tempString += (char)readFile.get();
-                tempString += (char)readFile.get();
-            */
+             tempString += (char)readFile.get();
+             tempString += (char)readFile.get();
+             tempString += (char)readFile.get();
+             tempString += (char)readFile.get();
+             tempString += (char)readFile.get();
+             tempString += (char)readFile.get();
+             */
             // cout << tempString;
             
             // writeFile << tempString;
             // writeFile << "This is another line.\n";
             tempString.erase();
-            tempString.append("\nLength:\t"); tempString.append(to_string(length));
+            tempString.append("\nLength:\t"); tempString.append(to_string((length*2)));
             writeFile << tempString;
-            cout << "Length:\t" << length << "\n";
+            cout << "Length:\t" << length*2 << "\n";
             writeFile.close();
             readFile.close();
             
