@@ -781,7 +781,7 @@ boolean pageProgram(uint32_t adress, byte numberOfPagesToWrite, int sampleSelect
 
   
     // Sender data afsted
-    for(int i = 0; i <= numberOfBytes; i++){
+    for(int i = 0; i < numberOfBytes; i++){
       byte tempByte = arrayToSaveToFlash[sampleSelection][(i + (numberOfPagesToWrite * 0xFF))];
       transmitOneByteSPI(tempByte);
       // Serial.print("Skriver:\t"); Serial.println(arrayToSaveToFlash[i], HEX);
