@@ -372,6 +372,12 @@ void loop(){
       unlockRoutine();
       break;
 
+    case 'C': // Check data
+      headerRoutine();
+      printReadData();
+      printMainMenu();
+      break;
+
       
     default:
       // Serial.println("Wrong input.");
@@ -461,12 +467,12 @@ void programRoutine(){
       Serial.print("tempVal:\t"); Serial.println(tempVal);
     #endif 
     
-  
     
     boolean lykkesDetAtSkrive = false;   
     switch(sampleNr){
       
-      
+
+
       case 0:
         // KICK sample
   
@@ -483,18 +489,24 @@ void programRoutine(){
             block32Erase(tempAdresse);  
           #endif
         #endif
-  
         // Programmerer antallet af HELE pages
         for(int antal256bytes = 0; antal256bytes < tempVal; antal256bytes++){      
+          /* DEBUGGING
+          if(antal256bytes == 1){
+            pulseBreakPin();
+          }
+          */
           
           // do-while loop til at tjekke om det lykkes at skrive til chippen
           do{
             // Her gemmes status på skrive-processen. 
-            lykkesDetAtSkrive = pageProgram(tempAdresse, antal256bytes, sampleNr, 0xFF);
+            lykkesDetAtSkrive = pageProgram((tempAdresse & 0xFFFFFF00), antal256bytes, sampleNr, 0xFF);
+// pageProgram(uint32_t adress, byte numberOfPagesToWrite, int sampleSelection, byte numberOfBytes)
           } while(!lykkesDetAtSkrive);
           
           // Er det lykkedes at skrive, tælles adressen op
           tempAdresse += 0x000100;
+          
         }
   
         // Vi er nu færdige med at skrive antallet af HELE pages
@@ -604,6 +616,7 @@ void readRoutine(){
     Serial.print("Reading\n");
       uint32_t tempVal = 0x0;
       for(int sampleNr = 0; sampleNr < NUMBER_OF_SAMPLES; sampleNr++){
+        
         // Udregner antallet af HELE pages (256 byte)
         tempVal = (arrayLengths[sampleNr] - (arrayLengths[sampleNr] % 0xFF)) / 0xFF;
         
@@ -721,7 +734,7 @@ void readTwoBytes(uint32_t adress, uint8_t numberOfPagesToRead, byte sampleNr){
   
   // Step 4 
   int reading = 1;
-  for(int i = 0; i < (0xFF + (numberOfPagesToRead * 0xFF)); i++){
+  for(int i = 0; i <= (0xFF + (numberOfPagesToRead * 0x100)); i++){
     if(i % 0xFF == 0 && i != 0){
       readOneByteSPI();
     }
@@ -781,14 +794,17 @@ boolean pageProgram(uint32_t adress, byte numberOfPagesToWrite, int sampleSelect
 
   
     // Sender data afsted
-    for(int i = 0; i < numberOfBytes; i++){
-      byte tempByte = arrayToSaveToFlash[sampleSelection][(i + (numberOfPagesToWrite * 0xFF))];
+    for(int i = 0; i <= numberOfBytes; i++){
+      byte tempByte = arrayToSaveToFlash[sampleSelection][(i + (numberOfPagesToWrite * 0x100))];
       transmitOneByteSPI(tempByte);
       // Serial.print("Skriver:\t"); Serial.println(arrayToSaveToFlash[i], HEX);
       // Serial.print("Skriver til:\t"); Serial.println(i + (numberOfPagesToWrite * 0xFF));
     }
+    if(sampleSelection == 0){
+      pulseBreakPin();
+    }
     highSS();// Høj SS herefter
-
+    
     // Nu gemmer chippen sager!
     // delay(5);// Ifølge databladet (tPP) er chippen max 5 ms om at gemme
 
@@ -1270,13 +1286,14 @@ void printReadData(){
   
   Serial.println();  
   for(int sampleNr = 0; sampleNr < NUMBER_OF_SAMPLES; sampleNr++){
-    for(int i = 0; i < (arrayLengths[i]); i+=2){
-      Serial.print("SRD["); Serial.print(i); Serial.print("]:\t"); Serial.print(storeReadData[sampleNr][i], HEX); Serial.print("\t");
-      Serial.print("SRD["); Serial.print(i+1); Serial.print("]:\t"); Serial.print(storeReadData[sampleNr][i+1], HEX); Serial.print("\t");
-      if(i % 4 == 0){
+    for(int i = 0; i < (arrayLengths[sampleNr]); i+=2){
+      Serial.print("SRD["); Serial.print(i+1); Serial.print("]:\t"); Serial.print(storeReadData[sampleNr][i], HEX); Serial.print("\t");
+      Serial.print("SRD["); Serial.print(i+2); Serial.print("]:\t"); Serial.print(storeReadData[sampleNr][i+1], HEX); Serial.print("\t");
+      if(i % 4 == 0 && i!=0){
         Serial.println();
       }
     }
+    Serial.println("\n\n");
   }
   
 }
@@ -1312,7 +1329,7 @@ bool compareData(int sampleNr){
 
 void printMainMenu(){
   delay(3000);
-  Serial.print("\n\n\n\n\n\n");
+  Serial.print("\n\n\n\n\n\n\n\n\n\n\n\n");
   Serial.println("---------------------------------");
   Serial.println("|\t MAIN MENU\t\t|");
   Serial.println("---------------------------------");
@@ -1326,6 +1343,7 @@ void printMainMenu(){
   Serial.println("| L\tLock chip\t\t|");
   Serial.println("| D\tErase specific area\t|");
   Serial.println("| E\tErase whole chip\t|");
+  Serial.println("| C\tCheck read data\t\t|");
   Serial.println("---------------------------------\n\n");
 }
 
