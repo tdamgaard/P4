@@ -486,7 +486,7 @@ void programRoutine(){
         #if SHOULD_WIPE_WHOLE_CHIP == 0
           #if SHOULD_BLOCK_ERASE == 1
             // Bruges egentlig ikke mere
-            block32Erase(tempAdresse);  
+            blockErase(tempAdresse);  
           #endif
         #endif
         // Programmerer antallet af HELE pages
@@ -512,12 +512,12 @@ void programRoutine(){
         // Vi er nu færdige med at skrive antallet af HELE pages
         lykkesDetAtSkrive = false;
         
-        do{
-          // Samme procedure som overstående, bare denne gang er det ikke nødvendigvis en hel page
-          // hvilket ses på den sidste parameter i pageProgram()
-          lykkesDetAtSkrive = pageProgram(tempAdresse, tempVal, sampleNr, (arrayLengths[sampleNr] % 0xFF));
-        } while(!lykkesDetAtSkrive);
-  
+        if{(arrayLengths[sampleNr] % 0xFF) != 0){
+          do{
+            lykkesDetAtSkrive = pageProgram(tempAdresse, tempVal, sampleNr, (arrayLengths[sampleNr] % 0xFF));
+          }while(!lykkesDetAtSkrive);
+        }
+        
         // Done med programmering af sample 0
         break;
   
@@ -529,7 +529,7 @@ void programRoutine(){
         tempAdresse = SNARE_ADRESS;
         #if SHOULD_WIPE_WHOLE_CHIP == 0
           #if SHOULD_BLOCK_ERASE == 1
-            block32Erase(tempAdresse);  
+            blockErase(tempAdresse);  
           #endif  
         #endif
         for(int antal256bytes = 0; antal256bytes < tempVal; antal256bytes++){
@@ -540,10 +540,11 @@ void programRoutine(){
           tempAdresse += 0x000100;
         }
         lykkesDetAtSkrive = false;
-        do{
-          lykkesDetAtSkrive = pageProgram(tempAdresse, tempVal, sampleNr, (arrayLengths[sampleNr] % 0xFF));
-        }while(!lykkesDetAtSkrive);
-        
+        if{(arrayLengths[sampleNr] % 0xFF) != 0){
+          do{
+            lykkesDetAtSkrive = pageProgram(tempAdresse, tempVal, sampleNr, (arrayLengths[sampleNr] % 0xFF));
+          }while(!lykkesDetAtSkrive);
+        }
         break;
   
   
@@ -554,7 +555,7 @@ void programRoutine(){
         tempAdresse = HAT_ADRESS;
         #if SHOULD_WIPE_WHOLE_CHIP == 0
           #if SHOULD_BLOCK_ERASE == 1
-            block32Erase(tempAdresse);  
+            blockErase(tempAdresse);  
           #endif 
         #endif
         for(int antal256bytes = 0; antal256bytes < tempVal; antal256bytes++){
@@ -565,10 +566,11 @@ void programRoutine(){
           tempAdresse += 0x000100;
         }
         lykkesDetAtSkrive = false;
-        do{
-          lykkesDetAtSkrive = pageProgram(tempAdresse, tempVal, sampleNr, (arrayLengths[sampleNr] % 0xFF));
-        }while(!lykkesDetAtSkrive);
-        
+        if{(arrayLengths[sampleNr] % 0xFF) != 0){
+          do{
+            lykkesDetAtSkrive = pageProgram(tempAdresse, tempVal, sampleNr, (arrayLengths[sampleNr] % 0xFF));
+          }while(!lykkesDetAtSkrive);
+        }
         break;
   
   
@@ -579,7 +581,7 @@ void programRoutine(){
         tempAdresse = CLAP_ADRESS;
         #if SHOULD_WIPE_WHOLE_CHIP == 0
           #if SHOULD_BLOCK_ERASE == 1
-            block32Erase(tempAdresse);  
+            blockErase(tempAdresse);  
           #endif
         #endif
         
@@ -590,9 +592,11 @@ void programRoutine(){
           tempAdresse += 0x000100;
         }
         lykkesDetAtSkrive = false;
-        do{
-          lykkesDetAtSkrive = pageProgram(tempAdresse, tempVal, sampleNr, (arrayLengths[sampleNr] % 0xFF));
-        }while(!lykkesDetAtSkrive);
+        if{(arrayLengths[sampleNr] % 0xFF) != 0){
+          do{
+            lykkesDetAtSkrive = pageProgram(tempAdresse, tempVal, sampleNr, (arrayLengths[sampleNr] % 0xFF));
+          }while(!lykkesDetAtSkrive);
+        }
         break;
     }
   
