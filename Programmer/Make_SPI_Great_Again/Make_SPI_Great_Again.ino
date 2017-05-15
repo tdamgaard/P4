@@ -64,7 +64,7 @@
 //    1: Enable
 #define DEBUG_BLOCK_ERASE 0
 #define DEBUG_WHILE_LOOPS 0
-#define DEBUG_WRONG_DATA  0 
+#define DEBUG_WRONG_DATA  0
 #define PRINT_WHERE_WE_ARE_READING  0
 #define PRINT_WHERE_WE_ARE_WRITING  0 
 #define PRINT_THE_READ_DATA         0
@@ -733,15 +733,17 @@ void readTwoBytes(uint32_t adress, uint8_t numberOfPagesToRead, byte sampleNr){
   // Serial.print("Læser til:\t"); Serial.println(0xFF + (numberOfPagesToRead * 0xFF));
   
   // Step 4 
-  int reading = 1;
+  // int reading = 1;
   for(int i = 0; i <= (0xFF + (numberOfPagesToRead * 0x100)); i++){
-    if(i % 0xFF == 0 && i != 0){
-      readOneByteSPI();
-    }
+    /*
+      if(i % 0xFF == 0 && i != 0){
+        readOneByteSPI();
+      }
+    */
     storeReadData[sampleNr][i] = readOneByteSPI();
     // delayMicroseconds(0);
     // Serial.print("i:\t"); Serial.print(i); Serial.print("\t"); Serial.print(storeReadData[sampleNr][i], HEX); Serial.print("\t"); Serial.println(arrayToSaveToFlash[sampleNr][i],HEX);
-    reading++;
+    // reading++;
   }
   
   
@@ -825,6 +827,8 @@ boolean pageProgram(uint32_t adress, byte numberOfPagesToWrite, int sampleSelect
     // writeDisable();
     highSS(); // Vi er done nu
 
+
+    delay(1);
     
     if(P_FAIL || E_FAIL){
       // Det lykkedes ikke at skrive
@@ -838,6 +842,7 @@ boolean pageProgram(uint32_t adress, byte numberOfPagesToWrite, int sampleSelect
     /* 
      * Mon der burde låses igen? hmm
      */
+
 }
 
 void lockChip(){
