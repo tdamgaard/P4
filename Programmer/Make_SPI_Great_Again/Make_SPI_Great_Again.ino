@@ -32,12 +32,12 @@
 */
 
 
-// Block32-skifte ligger ved 0x010000, 0x020000 osv.
-// Block-skifte ligger ved 0x100000, 0x200000 osv.
-#define KICK_ADRESS     0x110000
-#define SNARE_ADRESS    0x120000
-#define HAT_ADRESS      0x130000
-#define CLAP_ADRESS     0x140000
+// Block32-skifte ligger ved 0x001000, 0x002000 osv.
+// Block-skifte ligger ved   0x010000, 0x020000 osv.
+#define KICK_ADRESS          0x110000
+#define SNARE_ADRESS         0x120000
+#define HAT_ADRESS           0x130000
+#define CLAP_ADRESS          0x140000
   
 
   // 0: Disable 
