@@ -443,7 +443,7 @@ void programRoutine(){
    Serial.println("Programmerer");
   
   
-  uint16_t tempVal = 0;
+  uint16_t numberOfWhilePages = 0;
   /*
   0: #define KICK_ADRESS     0x110000
   1: #define SNARE_ADRESS    0x120000
@@ -457,14 +457,14 @@ void programRoutine(){
   for(int sampleNr = 0; sampleNr < NUMBER_OF_SAMPLES; sampleNr++){
     
     // Her udregnes hvor mange HELE pages der er (256 byte)
-    tempVal = (arrayLengths[sampleNr] - (arrayLengths[sampleNr] % 0xFF)) / 0xFF;
+    numberOfWhilePages = (arrayLengths[sampleNr] - (arrayLengths[sampleNr] % 0xFF)) / 0xFF;
   
     // En variabel til at gemme hvilken page vi skriver til.
     uint32_t tempAdresse = 0;
   
     // Debugging...
     #if PRINT_WHERE_WE_ARE_WRITING == 1
-      Serial.print("tempVal:\t"); Serial.println(tempVal);
+      Serial.print("numberOfWhilePages:\t"); Serial.println(numberOfWhilePages);
     #endif 
     
     
@@ -490,7 +490,7 @@ void programRoutine(){
           #endif
         #endif
         // Programmerer antallet af HELE pages
-        for(int antal256bytes = 0; antal256bytes < tempVal; antal256bytes++){      
+        for(int antal256bytes = 0; antal256bytes < numberOfWhilePages; antal256bytes++){      
           /* DEBUGGING
           if(antal256bytes == 1){
             pulseBreakPin();
@@ -514,7 +514,7 @@ void programRoutine(){
         
         if{(arrayLengths[sampleNr] % 0xFF) != 0){
           do{
-            lykkesDetAtSkrive = pageProgram(tempAdresse, tempVal, sampleNr, (arrayLengths[sampleNr] % 0xFF));
+            lykkesDetAtSkrive = pageProgram(tempAdresse, numberOfWhilePages, sampleNr, (arrayLengths[sampleNr] % 0xFF));
           }while(!lykkesDetAtSkrive);
         }
         
@@ -532,7 +532,7 @@ void programRoutine(){
             blockErase(tempAdresse);  
           #endif  
         #endif
-        for(int antal256bytes = 0; antal256bytes < tempVal; antal256bytes++){
+        for(int antal256bytes = 0; antal256bytes < numberOfWhilePages; antal256bytes++){
           do{
             
             lykkesDetAtSkrive = pageProgram(tempAdresse, antal256bytes, sampleNr, 0xFF);
@@ -542,7 +542,7 @@ void programRoutine(){
         lykkesDetAtSkrive = false;
         if{(arrayLengths[sampleNr] % 0xFF) != 0){
           do{
-            lykkesDetAtSkrive = pageProgram(tempAdresse, tempVal, sampleNr, (arrayLengths[sampleNr] % 0xFF));
+            lykkesDetAtSkrive = pageProgram(tempAdresse, numberOfWhilePages, sampleNr, (arrayLengths[sampleNr] % 0xFF));
           }while(!lykkesDetAtSkrive);
         }
         break;
@@ -558,7 +558,7 @@ void programRoutine(){
             blockErase(tempAdresse);  
           #endif 
         #endif
-        for(int antal256bytes = 0; antal256bytes < tempVal; antal256bytes++){
+        for(int antal256bytes = 0; antal256bytes < numberOfWhilePages; antal256bytes++){
           do{
             
             lykkesDetAtSkrive = pageProgram(tempAdresse, antal256bytes, sampleNr, 0xFF);
@@ -568,7 +568,7 @@ void programRoutine(){
         lykkesDetAtSkrive = false;
         if{(arrayLengths[sampleNr] % 0xFF) != 0){
           do{
-            lykkesDetAtSkrive = pageProgram(tempAdresse, tempVal, sampleNr, (arrayLengths[sampleNr] % 0xFF));
+            lykkesDetAtSkrive = pageProgram(tempAdresse, numberOfWhilePages, sampleNr, (arrayLengths[sampleNr] % 0xFF));
           }while(!lykkesDetAtSkrive);
         }
         break;
@@ -585,7 +585,7 @@ void programRoutine(){
           #endif
         #endif
         
-        for(int antal256bytes = 0; antal256bytes < tempVal; antal256bytes++){
+        for(int antal256bytes = 0; antal256bytes < numberOfWhilePages; antal256bytes++){
           do{
             lykkesDetAtSkrive = pageProgram(tempAdresse, antal256bytes, sampleNr, 0xFF);
           } while(!lykkesDetAtSkrive);
@@ -594,7 +594,7 @@ void programRoutine(){
         lykkesDetAtSkrive = false;
         if{(arrayLengths[sampleNr] % 0xFF) != 0){
           do{
-            lykkesDetAtSkrive = pageProgram(tempAdresse, tempVal, sampleNr, (arrayLengths[sampleNr] % 0xFF));
+            lykkesDetAtSkrive = pageProgram(tempAdresse, numberOfWhilePages, sampleNr, (arrayLengths[sampleNr] % 0xFF));
           }while(!lykkesDetAtSkrive);
         }
         break;
@@ -618,32 +618,32 @@ void readRoutine(){
    *##########################################
    */
     Serial.print("Reading\n");
-      uint32_t tempVal = 0x0;
+      uint32_t numberOfWhilePages = 0x0;
       for(int sampleNr = 0; sampleNr < NUMBER_OF_SAMPLES; sampleNr++){
         
         // Udregner antallet af HELE pages (256 byte)
-        tempVal = (arrayLengths[sampleNr] - (arrayLengths[sampleNr] % 0xFF)) / 0xFF;
+        numberOfWhilePages = (arrayLengths[sampleNr] - (arrayLengths[sampleNr] % 0xFF)) / 0xFF;
         
         switch(sampleNr){
           
           case 0:
               Serial.println("\t[                ]");
-              readTwoBytes(KICK_ADRESS, tempVal, sampleNr); 
+              readTwoBytes(KICK_ADRESS, numberOfWhilePages, sampleNr); 
             break;
   
           case 1:
               Serial.println("\t[====            ]");
-              readTwoBytes(SNARE_ADRESS, tempVal, sampleNr); 
+              readTwoBytes(SNARE_ADRESS, numberOfWhilePages, sampleNr); 
             break;
   
           case 2:
               Serial.println("\t[========        ]");
-              readTwoBytes(HAT_ADRESS, tempVal, sampleNr); 
+              readTwoBytes(HAT_ADRESS, numberOfWhilePages, sampleNr); 
             break;
   
           case 3:          
               Serial.println("\t[============    ]");
-              readTwoBytes(CLAP_ADRESS, tempVal, sampleNr);
+              readTwoBytes(CLAP_ADRESS, numberOfWhilePages, sampleNr);
             break;
         }// Switch
         
