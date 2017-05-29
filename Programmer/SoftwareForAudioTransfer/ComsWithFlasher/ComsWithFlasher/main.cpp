@@ -37,8 +37,8 @@ int main () {
     string tempString2;
     
     for(int i = 0; i < NUMBER_OF_SAMPLES; i++){
-        string tempFileWriteString = "/Users/iLyngklip/Documents/Arduino/Make_SPI_Great_Again/ComsWithFlasher/ComsWithFlasher/Færdig_arduino_kode/";
-        string tempFileReadString = "/Users/iLyngklip/Documents/Arduino/Make_SPI_Great_Again/ComsWithFlasher/ComsWithFlasher/";
+        string tempFileWriteString = WRITE_PLACE;
+        string tempFileReadString = READ_PLACE;
         
         tempFileWriteString.append(sampleNames[i]);
         tempFileReadString.append(sampleNames[i]);
